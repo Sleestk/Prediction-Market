@@ -1,0 +1,38 @@
+# Name of this reusable action - appears in GitHub Actions UI
+name: "Prepare Python environment"
+
+# Brief description of what this action does
+description: "Set up Python and install dependencies"
+
+# Configuration for how this action runs
+runs:
+  # "composite" means this action is made up of multiple steps
+  # (as opposed to a Docker or JavaScript action)
+  using: "composite"
+
+  # The sequence of steps that will be executed when this action is used
+  steps:
+    # Step 1: Install a specific version of Python
+    - name: Set up Python 3.11
+      # Use an official GitHub action to install Python
+      uses: actions/setup-python@v2
+      with:
+        # Specify Python version 3.11 to ensure consistency across all environments
+        python-version: 3.11
+
+    # Step 2: Install Poetry (Python dependency management tool)
+    - name: Install Poetry
+      # Execute this step using the bash shell
+      shell: bash
+      # Download and run the Poetry installation script
+      # - curl: downloads content from a URL
+      # - -sSL: silent mode, show errors, follow redirects
+      # - pipe to python3: executes the downloaded installation script
+      run: curl -sSL https://install.python-poetry.org | python3 -
+
+    # Step 3: Install all project dependencies
+    - name: Install dependencies
+      shell: bash
+      # Use Poetry to read pyproject.toml and install all required packages
+      # This ensures the environment has everything needed to run the project
+      run: poetry install
